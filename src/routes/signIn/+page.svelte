@@ -25,7 +25,7 @@
 </script>
 
 <head>
-	<title>Realizar cadastro</title>
+	<title>Realizar login</title>
 </head>
 
 <form
@@ -51,5 +51,5 @@
 		bind:value={password}
 	/>
 
-	<button class="w-full py-1 px-10 bg-white rounded-md">Registrar</button>
+	<button class="w-full py-1 px-10 bg-white rounded-md">Login</button>
 </form>

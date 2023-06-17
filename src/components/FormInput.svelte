@@ -2,11 +2,12 @@
 	import { ValidationType } from '@/lib/validations';
 
 	export let label: string | undefined = undefined;
+	export let placeholder: string | undefined = undefined;
 	export let value: string;
 	export let type: string;
 	export let required: boolean = false;
 	export let validator: ((value: string) => ValidationType) | null = null;
-  export let errorMap: Map<ValidationType, string>;
+  	export let errorMap: Map<ValidationType, string>;
 
 	function typeAction(node: HTMLInputElement) {
 		node.type = type;
@@ -18,13 +19,14 @@
 
 <div class="flex flex-col gap-2 w-full">
 	{#if label}
-		<label class="text-white" for="{label}Input">{label}</label>
+		<label for="{label}Input">{label}</label>
 	{/if}
 	<input
-		class="rounded-md p-2"
+		class="rounded-md p-2 outline-none"
 		class:invalid
 		name={label}
 		id="{label}Input"
+		{placeholder}
 		{required}
 		bind:value
 		use:typeAction

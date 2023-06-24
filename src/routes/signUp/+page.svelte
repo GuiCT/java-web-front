@@ -6,21 +6,25 @@
 		validatePassword
 	} from '@/lib/validations';
 	import FormInput from '@/components/FormInput.svelte';
+	import { doSignUp } from '@/services/Api';
+	import { redirect } from '@sveltejs/kit';
 
+	let name = '';
 	let email = '';
 	let password = '';
 
-	function makeRequest() {
-		// fetch("endpoint", {
-		//   method: "POST",
-		//   headers: {
-		//     "Content-Type": "application/json",
-		//   },
-		//   body: JSON.stringify({ email, password }),
-		// })
-		// TODO: Form validation for invalid email or existing
-		// https://learn.svelte.dev/tutorial/form-validation
-		alert(`Request made with parameters: ${email} and ${password}`);
+	async function makeRequest() {
+		const result = await doSignUp({
+			name,
+			email,
+			password
+		});
+		if (typeof result === 'string') {
+			alert(`Error: ${result}`);
+		} else {
+			alert('Cadastro realizado com sucesso!');
+			window.location.href = '/board';
+		}
 	}
 </script>
 
@@ -30,8 +34,9 @@
 
 <form
 	class="flex flex-col items-end w-80 mx-auto my-10 justify-center gap-4"
-	on:submit={makeRequest}
+	on:submit|preventDefault={makeRequest}
 >
+	<FormInput label="Nome" type="text" placeholder="Nome completo" required bind:value={name} />
 	<FormInput
 		label="Email"
 		type="email"

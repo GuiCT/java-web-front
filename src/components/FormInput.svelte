@@ -6,15 +6,15 @@
 	export let value: string;
 	export let type: string;
 	export let required: boolean = false;
-	export let validator: ((value: string) => ValidationType) | null = null;
-  	export let errorMap: Map<ValidationType, string>;
+	export let validator: ((value: string) => ValidationType) | undefined = undefined;
+	export let errorMap: Map<ValidationType, string> | undefined = undefined;
 
 	function typeAction(node: HTMLInputElement) {
 		node.type = type;
 	}
 
 	$: status = validator ? validator(value) : ValidationType.VALID;
-	$: invalid = status !== ValidationType.VALID;
+	$: invalid = validator ? status !== ValidationType.VALID : false;
 </script>
 
 <div class="flex flex-col gap-2 w-full">
@@ -31,7 +31,7 @@
 		bind:value
 		use:typeAction
 	/>
-	{#if invalid}
+	{#if invalid && errorMap}
 		<p class="error text-xs">{errorMap.get(status)}</p>
 	{/if}
 </div>

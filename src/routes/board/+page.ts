@@ -13,6 +13,7 @@ export async function load() {
 		throw redirect(308, '/signIn');
 	}
 
+	debugger;
 	const [successUserName, userName] = await getUserName();
 	const [successReadingLists, userLists] = await getReadingLists();
 

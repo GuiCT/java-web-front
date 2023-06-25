@@ -6,7 +6,7 @@ import type {
 	SignUpResponse
 } from '@/dtos/api-dto';
 import { jwtStore } from '@/stores/jwt';
-import type { ReadingList } from '@/lib/types';
+import type { ReadingList, ReadingListEntry } from '@/lib/types';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { get } from 'svelte/store';
 
@@ -83,18 +83,53 @@ export async function getReadingLists(): Promise<AxiosTypedResponse<ReadingList[
 	}
 }
 
-export async function createReadingList(): Promise<AxiosTypedResponse<null>> {
+export async function createReadingList(name: string): Promise<AxiosTypedResponse<ReadingList>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'Unauthorized'];
 	}
 	try {
-		await axiosInstance.post('/reading-list/', {
-			headers: {
-				authorization: `Bearer ${tokenFromStore}`
-			}
-		});
-		return [true, null];
+		const responseData = (
+			await axiosInstance.post(
+				'/reading-list/',
+				{
+					name
+				},
+				{
+					headers: {
+						authorization: `Bearer ${tokenFromStore}`
+					}
+				}
+			)
+		).data as ReadingList;
+		return [true, responseData];
+	} catch (e) {
+		return dealWithError(e);
+	}
+}
+
+export async function updateReadingList(
+	readingList: ReadingList
+): Promise<AxiosTypedResponse<ReadingList>> {
+	const tokenFromStore = get(jwtStore);
+	if (!tokenFromStore) {
+		return [false, 'Unauthorized'];
+	}
+	try {
+		const responseData = (
+			await axiosInstance.put(
+				`/reading-list/${readingList.id}`,
+				{
+					name: readingList.name
+				},
+				{
+					headers: {
+						authorization: `Bearer ${tokenFromStore}`
+					}
+				}
+			)
+		).data as ReadingList;
+		return [true, responseData];
 	} catch (e) {
 		return dealWithError(e);
 	}
@@ -112,6 +147,82 @@ export async function deleteReadingList(id: string): Promise<AxiosTypedResponse<
 			}
 		});
 		return [true, null];
+	} catch (e) {
+		return dealWithError(e);
+	}
+}
+
+export async function createReadingListEntry(
+	readingListId: string,
+	entryName: string
+): Promise<AxiosTypedResponse<ReadingListEntry>> {
+	const tokenFromStore = get(jwtStore);
+	if (!tokenFromStore) {
+		return [false, 'Unauthorized'];
+	}
+	try {
+		const responseData = (
+			await axiosInstance.post(
+				`/reading-list/${readingListId}/entry`,
+				{
+					name: entryName
+				},
+				{
+					headers: {
+						authorization: `Bearer ${tokenFromStore}`
+					}
+				}
+			)
+		).data as ReadingListEntry;
+		return [true, responseData];
+	} catch (e) {
+		return dealWithError(e);
+	}
+}
+
+export async function deleteReadingListEntry(
+	entry: ReadingListEntry
+): Promise<AxiosTypedResponse<null>> {
+	const tokenFromStore = get(jwtStore);
+	if (!tokenFromStore) {
+		return [false, 'Unauthorized'];
+	}
+	try {
+		await axiosInstance.delete(`/reading-list/${entry.readingListId}/entry/${entry.id}`, {
+			headers: {
+				authorization: `Bearer ${tokenFromStore}`
+			}
+		});
+		return [true, null];
+	} catch (e) {
+		return dealWithError(e);
+	}
+}
+
+export async function updateReadingListEntry(
+	entry: ReadingListEntry
+): Promise<AxiosTypedResponse<ReadingListEntry>> {
+	const tokenFromStore = get(jwtStore);
+	if (!tokenFromStore) {
+		return [false, 'Unauthorized'];
+	}
+	try {
+		const responseData = (
+			await axiosInstance.put(
+				`/reading-list/${entry.readingListId}/entry/${entry.id}`,
+				{
+					name: entry.name,
+					dueDate: entry.dueDate,
+					pictureUrl: entry.pictureUrl
+				},
+				{
+					headers: {
+						authorization: `Bearer ${tokenFromStore}`
+					}
+				}
+			)
+		).data as ReadingListEntry;
+		return [true, responseData];
 	} catch (e) {
 		return dealWithError(e);
 	}

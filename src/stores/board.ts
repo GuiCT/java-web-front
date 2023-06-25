@@ -7,11 +7,16 @@ export const { set, subscribe, update } = writable<{
 	userLists: ReadingList[];
 }>();
 
-function createReadingList(newList: ReadingList) {
-	update((board) => ({
-		...board,
-		userLists: [...board.userLists, newList]
-	}));
+async function createReadingList(name: string) {
+	const [success, retVal] = await Api.createReadingList(name);
+	if (success) {
+		update((board) => ({
+			...board,
+			userLists: [...board.userLists, retVal]
+		}));
+	} else {
+		alert(retVal);
+	}
 }
 
 async function deleteReadingList(list: ReadingList) {
@@ -26,28 +31,77 @@ async function deleteReadingList(list: ReadingList) {
 	}
 }
 
-function createReadingListEntry(newEntry: ReadingListEntry) {
-	update((board) => ({
-		...board,
-		userLists: board.userLists.map((list) => {
-			if (list.id === newEntry.readingListId) {
-				list.entries = [...list.entries, newEntry];
-			}
-			return list;
-		})
-	}));
+async function updateReadingList(newList: ReadingList) {
+	const [success, error] = await Api.updateReadingList(newList);
+	if (success) {
+		update((board) => ({
+			...board,
+			userLists: board.userLists.map((list) => {
+				if (list.id === newList.id) {
+					return newList;
+				}
+				return list;
+			})
+		}));
+	} else {
+		alert(error);
+	}
 }
 
-function deleteReadingListEntry(entry: ReadingListEntry) {
-	update((board) => ({
-		...board,
-		userLists: board.userLists.map((list) => {
-			if (list.id === entry.readingListId) {
-				list.entries = list.entries.filter((entry) => entry.id !== entry.id);
-			}
-			return list;
-		})
-	}));
+async function createReadingListEntry(readingListId: string, entryName: string) {
+	const [success, retVal] = await Api.createReadingListEntry(readingListId, entryName);
+	if (success) {
+		update((board) => ({
+			...board,
+			userLists: board.userLists.map((list) => {
+				if (list.id === retVal.readingListId) {
+					list.entries = [...list.entries, retVal];
+				}
+				return list;
+			})
+		}));
+	} else {
+		alert(retVal);
+	}
+}
+
+async function deleteReadingListEntry(entry: ReadingListEntry) {
+	const [success, errorMessage] = await Api.deleteReadingListEntry(entry);
+	if (success) {
+		update((board) => ({
+			...board,
+			userLists: board.userLists.map((list) => {
+				if (list.id === entry.readingListId) {
+					list.entries = list.entries.filter((entry) => entry.id !== entry.id);
+				}
+				return list;
+			})
+		}));
+	} else {
+		alert(errorMessage);
+	}
+}
+
+async function updateReadingListEntry(entry: ReadingListEntry) {
+	const [success, retVal] = await Api.updateReadingListEntry(entry);
+	if (success) {
+		update((board) => ({
+			...board,
+			userLists: board.userLists.map((list) => {
+				if (list.id === entry.readingListId) {
+					list.entries = list.entries.map((entry) => {
+						if (entry.id === retVal.id) {
+							return retVal;
+						}
+						return entry;
+					});
+				}
+				return list;
+			})
+		}));
+	} else {
+		alert(retVal);
+	}
 }
 
 export const boardStore = {

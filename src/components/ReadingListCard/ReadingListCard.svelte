@@ -36,7 +36,6 @@
 	}
 
 	function updateList() {
-		debugger;
 		const res = prompt('Digite novo nome da lista');
 		if (!res) return;
 		if (validateListName(res) !== ValidationType.VALID) {

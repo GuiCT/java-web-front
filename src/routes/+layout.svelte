@@ -12,7 +12,7 @@
 	}
 
 	:global(html) {
-		background-color: #cccccc;
+		background-color: #fff;
 		color: var(--primary);
 	}
 </style>

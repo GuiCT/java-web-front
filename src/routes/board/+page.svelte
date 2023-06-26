@@ -25,7 +25,7 @@
 		<h1>{$boardStore.userName}</h1>
 		<button on:click={createReadingList}>+</button>
 	</header>
-	<main class="flex flex-row flex-wrap justify-between row-gap-2">
+	<main class="flex flex-row flex-wrap justify-center gap-4 row-gap-2">
 		{#each userListsSortedByName as list}
 			<ReadingListCard {list} />
 		{/each}

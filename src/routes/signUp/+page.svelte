@@ -14,16 +14,16 @@
 	let password = '';
 
 	async function makeRequest() {
-		const result = await doSignUp({
+		const [success, error] = await doSignUp({
 			name,
 			email,
 			password
 		});
-		if (typeof result === 'string') {
-			alert(`Error: ${result}`);
-		} else {
+		if (success) {
 			alert('Cadastro realizado com sucesso!');
 			window.location.href = '/board';
+		} else {
+			alert(error);
 		}
 	}
 </script>

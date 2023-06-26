@@ -10,11 +10,10 @@
 
 	function updateEntryPictureURL() {
 		const res = prompt('Digite a URL da imagem');
-		if (!res) return;
 
 		boardStore.updateReadingListEntry({
 			...entry,
-			pictureUrl: res || entry.pictureUrl
+			pictureUrl: res
 		});
 	}
 
@@ -30,20 +29,24 @@
 
 	function updateEntryDueDate() {
 		const res = prompt('Digite a nova data de entrega');
-		if (!res) return;
 
-		debugger;
-		const dateTime = DateTime.fromFormat(res, 'dd/MM/yyyy');
+		let newDate: Date | null = null;
 
-		if (!dateTime.isValid) {
-			alert('Data inválida');
-			return;
+		if (res) {
+			const dateTime = DateTime.fromFormat(res, 'dd/MM/yyyy');
+			if (!dateTime.isValid) {
+				alert('Data inválida');
+				return;
+			}
+			newDate = dateTime.toJSDate();
 		} else {
-			boardStore.updateReadingListEntry({
-				...entry,
-				dueDate: dateTime.toJSDate()
-			});
+			newDate = null;
 		}
+
+		boardStore.updateReadingListEntry({
+			...entry,
+			dueDate: newDate
+		});
 	}
 
 	function deleteEntry() {
@@ -53,16 +56,12 @@
 
 <tr>
 	<td class="px-8 py-2">
-		{#if entry.pictureUrl}
-			<img src={entry.pictureUrl} alt="URL inválida" class="w-20 h-16" />
-		{:else}
-			<img
-				src="placeholder.png"
-				alt="Placeholder"
-				class="w-20 h-16"
-				on:click={updateEntryPictureURL}
-			/>
-		{/if}
+		<img
+			src={entry.pictureUrl ? entry.pictureUrl : 'placeholder.png'}
+			alt={entry.pictureUrl ? 'URL inválida' : 'Placeholder'}
+			class="w-20 h-16"
+			on:click={updateEntryPictureURL}
+		/>
 	</td>
 	<td class="px-8 py-2">
 		<span on:click={updateEntryName}>{entry.name}</span>

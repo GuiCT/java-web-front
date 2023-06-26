@@ -7,21 +7,20 @@
 	} from '@/lib/validations';
 	import FormInput from '@/components/FormInput.svelte';
 	import { doSignIn } from '@/services/Api';
-	import { redirect } from '@sveltejs/kit';
 
 	let email = '';
 	let password = '';
 
 	async function makeRequest() {
-		const result = await doSignIn({
+		const [success, error] = await doSignIn({
 			email,
 			password
 		});
-		if (typeof result === 'string') {
-			alert(`Error: ${result}`);
-		} else {
+		if (success) {
 			alert('Login realizado com sucesso!');
 			window.location.href = '/board';
+		} else {
+			alert(error);
 		}
 	}
 </script>

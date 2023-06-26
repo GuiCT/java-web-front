@@ -11,6 +11,7 @@ import { jwtStore } from '@/stores/jwt';
 import type { ReadingList, ReadingListEntry, User } from '@/lib/types';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { get } from 'svelte/store';
+import { DateTime } from 'luxon';
 
 const axiosInstance = axios.create({
 	baseURL: 'http://localhost:8080'
@@ -216,7 +217,7 @@ export async function updateReadingListEntry(
 				`/reading-list/${entry.readingListId}/entry/${entry.id}`,
 				{
 					name: entry.name,
-					dueDate: entry.dueDate ? entry.dueDate.toISOString() : null,
+					dueDate: entry.dueDate ? DateTime.fromJSDate(entry.dueDate).toFormat('yyyy-MM-dd') : null,
 					pictureUrl: entry.pictureUrl
 				},
 				{

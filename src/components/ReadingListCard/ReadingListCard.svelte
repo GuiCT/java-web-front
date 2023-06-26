@@ -44,7 +44,9 @@
 	}
 </script>
 
-<article class="flex flex-col gap-3 min-w-[16rem] bg-white py-3 px-4 rounded-md shadow">
+<article
+	class="flex flex-col gap-3 min-w-[16rem] py-3 px-4 border-2 border-neutral-200 rounded-md shadow-md"
+>
 	<header class="flex flex-row gap-2">
 		<h1 class="flex-1">{list.name}</h1>
 		<button on:click={updateList}>

@@ -34,9 +34,9 @@
 	<article>
 		<thead>
 			<tr>
-				<th>Nome</th>
-				<th>Data de início</th>
-				<th>Data de término</th>
+				<th class="px-8 py-2 text-center">Nome</th>
+				<th class="px-8 py-2 text-center">Data de início</th>
+				<th class="px-8 py-2 text-center">Data de término</th>
 			</tr>
 		</thead>
 		<tbody>

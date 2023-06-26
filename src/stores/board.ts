@@ -8,6 +8,7 @@ export const { set, subscribe, update } = writable<{
 	userLists: ReadingList[];
 }>();
 
+
 async function createReadingList(name: string) {
 	const [success, retVal] = await Api.createReadingList(name);
 	if (success) {
@@ -112,6 +113,8 @@ async function updateReadingListEntry(entry: ReadingListEntry) {
 		alert(retVal);
 	}
 }
+
+
 
 export const boardStore = {
 	set,

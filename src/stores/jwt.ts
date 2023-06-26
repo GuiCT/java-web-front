@@ -9,5 +9,9 @@ export const jwtStore = {
 	set: (jwt: string) => {
 		isBrowser && (localStorage.jwt = jwt);
 		set(jwt);
+	},
+	out: () => {
+		isBrowser && localStorage.removeItem('jwt');
+		set('');
 	}
 };

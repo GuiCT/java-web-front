@@ -7,7 +7,6 @@
 	} from '@/lib/validations';
 	import FormInput from '@/components/FormInput.svelte';
 	import { doSignUp } from '@/services/Api';
-	import { redirect } from '@sveltejs/kit';
 
 	let name = '';
 	let email = '';
@@ -20,7 +19,6 @@
 			password
 		});
 		if (success) {
-			alert('Cadastro realizado com sucesso!');
 			window.location.href = '/board';
 		} else {
 			alert(error);
@@ -33,7 +31,7 @@
 </head>
 
 <form
-	class="flex flex-col items-end w-80 mx-auto my-10 justify-center gap-4"
+	class="flex flex-col items-center w-80 mx-auto justify-center"
 	on:submit|preventDefault={makeRequest}
 >
 	<FormInput label="Nome" type="text" placeholder="Nome completo" required bind:value={name} />
@@ -56,5 +54,8 @@
 		bind:value={password}
 	/>
 
-	<button class="w-full py-1 px-10 bg-white rounded-md">Registrar</button>
+	
+	<button class="w-full py-2 mt-4 px-10 rounded-md from-yellow-400 to-orange-400 bg-gradient-to-r text-white
+	">Registrar</button>
+	<a href="/signIn" class="text-lg py-5">Já tem uma conta? Faça login aqui!</a>
 </form>

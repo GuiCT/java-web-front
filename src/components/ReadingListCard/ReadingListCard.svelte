@@ -61,13 +61,13 @@
 </script>
 
 <article
-	class="flex flex-col gap-3 min-w-[16rem] py-3 px-4 border-2 border-neutral-200 rounded-md shadow-md"
+	class="flex flex-col gap-3 min-w-[16rem] py-3 px-4 border-2 rounded-md shadow-md bg-white bg-opacity-90"
 >
 	<header class="flex flex-row gap-2">
-		<h1 class="flex-1">{list.name}</h1>
 		<button on:click={seeReport}>
 			<Icon src={BiSolidReport} />
-		</button>
+		</button>	
+		<h1 class="flex-1 font-bold text-lg uppercase">{list.name}</h1>
 		<button on:click={updateList}>
 			<Icon src={AiFillEdit} />
 		</button>

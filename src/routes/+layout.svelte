@@ -2,7 +2,7 @@
 	import '../app.css';
 </script>
 
-<main class="p-4 bg-gradient-to-r from-red-400 to-blue-500 h-screen">
+<main class="">
 	<slot />
 </main>
 

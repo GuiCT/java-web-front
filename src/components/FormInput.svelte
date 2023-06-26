@@ -19,7 +19,7 @@
 
 <div class="flex flex-col gap-2 w-full">
 	{#if label}
-		<label for="{label}Input">{label}</label>
+		<label for="{label}Input" class=" text-lg">{label}</label>
 	{/if}
 	<input
 		class="rounded-md p-2 outline-none"
@@ -32,7 +32,7 @@
 		use:typeAction
 	/>
 	{#if invalid && errorMap}
-		<p class="error text-xs">{errorMap.get(status)}</p>
+		<p class="error text-md">{errorMap.get(status)}</p>
 	{/if}
 </div>
 

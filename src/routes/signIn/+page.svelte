@@ -17,7 +17,6 @@
 			password
 		});
 		if (success) {
-			alert('Login realizado com sucesso!');
 			window.location.href = '/board';
 		} else {
 			alert(error);
@@ -30,7 +29,7 @@
 </head>
 
 <form
-	class="flex flex-col items-end w-80 mx-auto my-10 justify-center gap-4"
+	class="flex flex-col items-end  mx-auto justify-center gap-4"
 	on:submit|preventDefault={makeRequest}
 >
 	<FormInput
@@ -52,5 +51,7 @@
 		bind:value={password}
 	/>
 
+	
 	<button class="w-full py-1 px-10 bg-white rounded-md">Login</button>
+	<a href="/signUp" class="text-lg py-5">Não tem uma conta? Crie uma aqui!</a>
 </form>

@@ -3,10 +3,12 @@ import type {
 	SignInResponse,
 	SignUpBody,
 	ResponseError,
-	SignUpResponse
+	SignUpResponse,
+	ReadingListResponse,
+	ReadingListEntryResponse
 } from '@/dtos/api-dto';
 import { jwtStore } from '@/stores/jwt';
-import type { ReadingList, ReadingListEntry } from '@/lib/types';
+import type { ReadingList, ReadingListEntry, User } from '@/lib/types';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { get } from 'svelte/store';
 
@@ -44,27 +46,27 @@ export async function doSignIn(data: SignInBody): Promise<AxiosTypedResponse<nul
 	}
 }
 
-export async function getUserName(): Promise<AxiosTypedResponse<string>> {
+export async function getUser(): Promise<AxiosTypedResponse<User>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'No JWT token found'];
 	}
 
 	try {
-		const response = (await (
+		const response = (
 			await axiosInstance.get('/user/me', {
 				headers: {
 					Authorization: `Bearer ${tokenFromStore}`
 				}
 			})
-		).data) as { name: string };
-		return [true, response.name];
+		).data as User;
+		return [true, response];
 	} catch (e) {
 		return dealWithError(e);
 	}
 }
 
-export async function getReadingLists(): Promise<AxiosTypedResponse<ReadingList[]>> {
+export async function getReadingLists(): Promise<AxiosTypedResponse<ReadingListResponse[]>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'Unauthorized'];
@@ -76,14 +78,16 @@ export async function getReadingLists(): Promise<AxiosTypedResponse<ReadingList[
 					authorization: `Bearer ${tokenFromStore}`
 				}
 			})
-		).data) as ReadingList[];
+		).data) as ReadingListResponse[];
 		return [true, response];
 	} catch (e) {
 		return dealWithError(e);
 	}
 }
 
-export async function createReadingList(name: string): Promise<AxiosTypedResponse<ReadingList>> {
+export async function createReadingList(
+	name: string
+): Promise<AxiosTypedResponse<ReadingListResponse>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'Unauthorized'];
@@ -101,7 +105,7 @@ export async function createReadingList(name: string): Promise<AxiosTypedRespons
 					}
 				}
 			)
-		).data as ReadingList;
+		).data as ReadingListResponse;
 		return [true, responseData];
 	} catch (e) {
 		return dealWithError(e);
@@ -110,7 +114,7 @@ export async function createReadingList(name: string): Promise<AxiosTypedRespons
 
 export async function updateReadingList(
 	readingList: ReadingList
-): Promise<AxiosTypedResponse<ReadingList>> {
+): Promise<AxiosTypedResponse<ReadingListResponse>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'Unauthorized'];
@@ -128,7 +132,7 @@ export async function updateReadingList(
 					}
 				}
 			)
-		).data as ReadingList;
+		).data as ReadingListResponse;
 		return [true, responseData];
 	} catch (e) {
 		return dealWithError(e);
@@ -155,7 +159,7 @@ export async function deleteReadingList(id: string): Promise<AxiosTypedResponse<
 export async function createReadingListEntry(
 	readingListId: string,
 	entryName: string
-): Promise<AxiosTypedResponse<ReadingListEntry>> {
+): Promise<AxiosTypedResponse<ReadingListEntryResponse>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'Unauthorized'];
@@ -173,7 +177,7 @@ export async function createReadingListEntry(
 					}
 				}
 			)
-		).data as ReadingListEntry;
+		).data as ReadingListEntryResponse;
 		return [true, responseData];
 	} catch (e) {
 		return dealWithError(e);
@@ -201,7 +205,7 @@ export async function deleteReadingListEntry(
 
 export async function updateReadingListEntry(
 	entry: ReadingListEntry
-): Promise<AxiosTypedResponse<ReadingListEntry>> {
+): Promise<AxiosTypedResponse<ReadingListEntryResponse>> {
 	const tokenFromStore = get(jwtStore);
 	if (!tokenFromStore) {
 		return [false, 'Unauthorized'];
@@ -212,7 +216,7 @@ export async function updateReadingListEntry(
 				`/reading-list/${entry.readingListId}/entry/${entry.id}`,
 				{
 					name: entry.name,
-					dueDate: entry.dueDate,
+					dueDate: entry.dueDate ? entry.dueDate.toISOString() : null,
 					pictureUrl: entry.pictureUrl
 				},
 				{
@@ -221,7 +225,7 @@ export async function updateReadingListEntry(
 					}
 				}
 			)
-		).data as ReadingListEntry;
+		).data as ReadingListEntryResponse;
 		return [true, responseData];
 	} catch (e) {
 		return dealWithError(e);

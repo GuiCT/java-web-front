@@ -31,3 +31,11 @@ export const passwordErrorMap = new Map([
 	[ValidationType.INVALID_LENGTH, 'A senha deve ter no mínimo 8 caracteres'],
 	[ValidationType.INVALID_FORMAT, 'A senha deve conter letras maiúsculas, minúsculas e números']
 ]);
+
+export function validateListName(name: string) {
+	if (name.length < 3 || name.length > 50) {
+		return ValidationType.INVALID_LENGTH;
+	}
+
+	return ValidationType.VALID;
+}

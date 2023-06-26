@@ -1,6 +1,7 @@
 import type { ReadingList, ReadingListEntry } from '@/lib/types';
 import { writable } from 'svelte/store';
 import * as Api from '@/services/Api';
+import { hydrateListEntry } from '@/lib/utils';
 
 export const { set, subscribe, update } = writable<{
 	userName: string;
@@ -10,9 +11,13 @@ export const { set, subscribe, update } = writable<{
 async function createReadingList(name: string) {
 	const [success, retVal] = await Api.createReadingList(name);
 	if (success) {
+		const newList = {
+			...retVal,
+			readingListEntries: []
+		} as ReadingList;
 		update((board) => ({
 			...board,
-			userLists: [...board.userLists, retVal]
+			userLists: [...board.userLists, newList]
 		}));
 	} else {
 		alert(retVal);
@@ -51,11 +56,12 @@ async function updateReadingList(newList: ReadingList) {
 async function createReadingListEntry(readingListId: string, entryName: string) {
 	const [success, retVal] = await Api.createReadingListEntry(readingListId, entryName);
 	if (success) {
+		const hydratedEntry = hydrateListEntry(readingListId, retVal);
 		update((board) => ({
 			...board,
 			userLists: board.userLists.map((list) => {
-				if (list.id === retVal.readingListId) {
-					list.entries = [...list.entries, retVal];
+				if (list.id === hydratedEntry.readingListId) {
+					list.readingListEntries = [...list.readingListEntries, hydratedEntry];
 				}
 				return list;
 			})
@@ -72,7 +78,9 @@ async function deleteReadingListEntry(entry: ReadingListEntry) {
 			...board,
 			userLists: board.userLists.map((list) => {
 				if (list.id === entry.readingListId) {
-					list.entries = list.entries.filter((entry) => entry.id !== entry.id);
+					list.readingListEntries = list.readingListEntries.filter(
+						(entry) => entry.id !== entry.id
+					);
 				}
 				return list;
 			})
@@ -85,13 +93,14 @@ async function deleteReadingListEntry(entry: ReadingListEntry) {
 async function updateReadingListEntry(entry: ReadingListEntry) {
 	const [success, retVal] = await Api.updateReadingListEntry(entry);
 	if (success) {
+		const newEntry = hydrateListEntry(entry.readingListId, retVal);
 		update((board) => ({
 			...board,
 			userLists: board.userLists.map((list) => {
 				if (list.id === entry.readingListId) {
-					list.entries = list.entries.map((entry) => {
+					list.readingListEntries = list.readingListEntries.map((entry) => {
 						if (entry.id === retVal.id) {
-							return retVal;
+							return newEntry;
 						}
 						return entry;
 					});
@@ -110,6 +119,8 @@ export const boardStore = {
 	update,
 	createReadingList,
 	deleteReadingList,
+	updateReadingList,
 	createReadingListEntry,
-	deleteReadingListEntry
+	deleteReadingListEntry,
+	updateReadingListEntry
 };

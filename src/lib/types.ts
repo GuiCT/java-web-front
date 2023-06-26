@@ -1,16 +1,22 @@
+export type User = {
+	id: string;
+	name: string;
+	email: string;
+};
+
 export type ReadingListEntry = {
 	id: string;
 	name: string;
+	pictureUrl: string | null;
+	dueDate: Date | null;
 	createdAt: Date;
-	readingListId: string;
-} & Partial<{
-	dueDate: Date;
-	pictureUrl: string;
 	updatedAt: Date;
-}>;
+	readingListId: string; // Adicionado ao realizar a requisição
+};
 
 export type ReadingList = {
 	id: string;
 	name: string;
-	entries: ReadingListEntry[];
+	user: User;
+	readingListEntries: ReadingListEntry[];
 };

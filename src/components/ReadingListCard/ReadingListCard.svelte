@@ -3,38 +3,44 @@
 	import AiFillDelete from 'svelte-icons-pack/ai/AiFillDelete';
 	import AiFillEdit from 'svelte-icons-pack/ai/AiFillEdit';
 	import CardItem from './CardItem.svelte';
-	import type { ReadingList, ReadingListEntry } from '@/lib/types';
+	import type { ReadingList } from '@/lib/types';
 	import { boardStore } from '@/stores/board';
+	import { ValidationType, validateListName } from '@/lib/validations';
 
 	export let list: ReadingList;
+
+	$: entriesSortedByDueDate = list.readingListEntries.sort((a, b) => {
+		if (a.dueDate && b.dueDate) {
+			return a.dueDate.getTime() - b.dueDate.getTime();
+		}
+
+		if (a.dueDate) return -1;
+		if (b.dueDate) return 1;
+		return a.updatedAt.getTime() - b.updatedAt.getTime();
+	});
 
 	function deleteList() {
 		boardStore.deleteReadingList(list);
 	}
 
 	function updateList() {
+		debugger;
 		const res = prompt('Digite novo nome da lista');
 		if (!res) return;
-		list.name = res;
-		// TODO chamada backend
+		if (validateListName(res) !== ValidationType.VALID) {
+			alert('Nome de lista deve ter entre 3 e 25 caracteres');
+			return;
+		}
+
+		const newList = { ...list, name: res };
+		boardStore.updateReadingList(newList);
 	}
 
 	function addListEntry() {
 		const res = prompt('Digite o nome do livro');
 		if (!res) return;
 
-		const newListEntry: ReadingListEntry = {
-			name: res,
-			readingListId: list.id,
-			id: 'a',
-			createdAt: new Date(),
-			dueDate: new Date('2023-06-30'),
-			pictureUrl:
-				'https://odgraph.com.br/wp-content/uploads/2020/03/maquete-de-uma-capa-de-livro_117023-1303.jpg'
-		};
-
-		boardStore.createReadingListEntry(newListEntry);
-		// TODO chamada backend
+		boardStore.createReadingListEntry(list.id, res);
 	}
 </script>
 
@@ -49,7 +55,7 @@
 		</button>
 	</header>
 	<main class="flex flex-col gap-1">
-		{#if list.entries.length > 0}
+		{#if entriesSortedByDueDate.length > 0}
 			<table class="table-auto">
 				<thead>
 					<tr>
@@ -60,7 +66,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each list.entries as listEntry}
+					{#each entriesSortedByDueDate as listEntry}
 						<CardItem entry={listEntry} />
 					{/each}
 				</tbody>

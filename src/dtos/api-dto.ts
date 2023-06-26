@@ -1,3 +1,5 @@
+import type { ReadingList, ReadingListEntry } from '@/lib/types';
+
 export type SignUpBody = {
 	name: string;
 	email: string;
@@ -18,3 +20,16 @@ export type SignInBody = {
 };
 
 export type SignInResponse = SignUpResponse;
+
+export type ReadingListEntryResponse = {
+	id: string;
+	name: string;
+	pictureUrl: string | null;
+	dueDate: string | null;
+	createdAt: string;
+	updatedAt: string;
+};
+
+export type ReadingListResponse = Omit<ReadingList, 'readingListEntries'> & {
+	readingListEntries: ReadingListEntryResponse[];
+};

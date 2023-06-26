@@ -24,6 +24,7 @@ export type SignInResponse = SignUpResponse;
 export type ReadingListEntryResponse = {
 	id: string;
 	name: string;
+	read: boolean;
 	pictureUrl: string | null;
 	dueDate: string | null;
 	createdAt: string;

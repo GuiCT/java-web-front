@@ -2,7 +2,7 @@
 	import '../app.css';
 </script>
 
-<main class="p-4">
+<main class="p-4 bg-gradient-to-r from-red-400 to-blue-500 h-screen">
 	<slot />
 </main>
 
@@ -12,7 +12,6 @@
 	}
 
 	:global(html) {
-		background-color: #fff;
 		color: var(--primary);
 	}
 </style>

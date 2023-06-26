@@ -6,6 +6,7 @@ export function hydrateListEntry(listId: string, entry: ReadingListEntryResponse
 	const newEntry: ReadingListEntry = {
 		id: entry.id,
 		name: entry.name,
+		read: entry.read,
 		pictureUrl: entry.pictureUrl,
 		dueDate: entry.dueDate ? new Date(entry.dueDate) : null,
 		createdAt: new Date(entry.createdAt),

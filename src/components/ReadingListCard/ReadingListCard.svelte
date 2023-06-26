@@ -3,20 +3,31 @@
 	import AiFillDelete from 'svelte-icons-pack/ai/AiFillDelete';
 	import AiFillEdit from 'svelte-icons-pack/ai/AiFillEdit';
 	import CardItem from './CardItem.svelte';
-	import type { ReadingList } from '@/lib/types';
+	import type { ReadingList, ReadingListEntry } from '@/lib/types';
 	import { boardStore } from '@/stores/board';
 	import { ValidationType, validateListName } from '@/lib/validations';
 
 	export let list: ReadingList;
 
 	$: entriesSortedByDueDate = list.readingListEntries.sort((a, b) => {
-		if (a.dueDate && b.dueDate) {
-			return a.dueDate.getTime() - b.dueDate.getTime();
-		}
+		const compareDueDate = (entryA: ReadingListEntry, entryB: ReadingListEntry) => {
+			if (entryA.dueDate && entryB.dueDate) {
+				return entryA.dueDate.getTime() - entryB.dueDate.getTime();
+			}
+			if (entryA.dueDate) return -1;
+			if (entryB.dueDate) return 1;
+			return entryA.updatedAt.getTime() - entryB.updatedAt.getTime();
+		};
 
-		if (a.dueDate) return -1;
-		if (b.dueDate) return 1;
-		return a.updatedAt.getTime() - b.updatedAt.getTime();
+		if (a.read && b.read) {
+			return compareDueDate(a, b);
+		} else if (a.read && !b.read) {
+			return 1;
+		} else if (!a.read && b.read) {
+			return -1;
+		} else {
+			return compareDueDate(a, b);
+		}
 	});
 
 	function deleteList() {
@@ -65,6 +76,7 @@
 						<th>Nome</th>
 						<th>Início</th>
 						<th>Prazo</th>
+						<th>Concluído</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -7,6 +7,7 @@ export type User = {
 export type ReadingListEntry = {
 	id: string;
 	name: string;
+	read: boolean,
 	pictureUrl: string | null;
 	dueDate: Date | null;
 	createdAt: Date;

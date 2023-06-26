@@ -2,14 +2,13 @@ import type {
 	SignInBody,
 	SignInResponse,
 	SignUpBody,
-	ResponseError,
 	SignUpResponse,
 	ReadingListResponse,
 	ReadingListEntryResponse
 } from '@/dtos/api-dto';
 import { jwtStore } from '@/stores/jwt';
 import type { ReadingList, ReadingListEntry, User } from '@/lib/types';
-import axios, { AxiosError, type AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { get } from 'svelte/store';
 import { DateTime } from 'luxon';
 
@@ -217,6 +216,7 @@ export async function updateReadingListEntry(
 				`/reading-list/${entry.readingListId}/entry/${entry.id}`,
 				{
 					name: entry.name,
+					isRead: entry.read,
 					dueDate: entry.dueDate ? DateTime.fromJSDate(entry.dueDate).toFormat('yyyy-MM-dd') : null,
 					pictureUrl: entry.pictureUrl
 				},
@@ -233,7 +233,7 @@ export async function updateReadingListEntry(
 	}
 }
 
-function dealWithError(e: any): [false, string] {
+function dealWithError(e: unknown): [false, string] {
 	const error = e as AxiosError;
 	const response = error.response?.data as { error: string };
 	return [false, response?.error || 'Erro desconhecido'];

@@ -2,6 +2,7 @@
 	import Icon from 'svelte-icons-pack/Icon.svelte';
 	import AiFillDelete from 'svelte-icons-pack/ai/AiFillDelete';
 	import AiFillEdit from 'svelte-icons-pack/ai/AiFillEdit';
+	import BiSolidReport from 'svelte-icons-pack/bi/BiSolidReport';
 	import CardItem from './CardItem.svelte';
 	import type { ReadingList, ReadingListEntry } from '@/lib/types';
 	import { boardStore } from '@/stores/board';
@@ -53,6 +54,10 @@
 
 		boardStore.createReadingListEntry(list.id, res);
 	}
+
+	function seeReport() {
+		window.location.href = `/report/${list.id}`;
+	}
 </script>
 
 <article
@@ -60,6 +65,9 @@
 >
 	<header class="flex flex-row gap-2">
 		<h1 class="flex-1">{list.name}</h1>
+		<button on:click={seeReport}>
+			<Icon src={BiSolidReport} />
+		</button>
 		<button on:click={updateList}>
 			<Icon src={AiFillEdit} />
 		</button>
